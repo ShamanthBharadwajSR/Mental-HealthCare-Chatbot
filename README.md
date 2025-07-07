@@ -43,4 +43,5 @@ The chatbot intelligently retrieves answers based on both **semantic relevance**
 6. Launch the app:
      ## Two interfaces have been provide you can use whichever is required
      python src/app.py
+     ---
      python src/chatbot_gui.py
