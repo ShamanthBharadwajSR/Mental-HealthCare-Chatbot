@@ -42,6 +42,8 @@ The chatbot intelligently retrieves answers based on both **semantic relevance**
 5. Generate Embeddings: python src/generate_embeddings.py
 6. Launch the app:
      ## Two interfaces have been provide you can use whichever is required
+
+
      python src/app.py
-     ---
+
      python src/chatbot_gui.py
