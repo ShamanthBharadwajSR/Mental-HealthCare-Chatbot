@@ -5,6 +5,8 @@ It provides emotionally aware responses through a user-friendly web interface bu
 
 ---
 
+![Screenshot 2024-12-20 113249](https://github.com/user-attachments/assets/b586d75f-9310-4025-bbdc-c7eba9117d30)
+
 ## 🧠 About the Project
 
 This project is a conversational AI chatbot designed to support users in dealing with mental health-related queries. It uses a combination of:
