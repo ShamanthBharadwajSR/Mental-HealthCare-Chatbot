@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Interface</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(120deg, #fbc2eb, #a6c1ee);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 600px;
+            height: 90%;
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background-color: #4a90e2;
+            padding: 20px;
+            text-align: center;
+            font-size: 26px;
+            color: #fff;
+            font-weight: bold;
+            border-bottom: 3px solid #92c9f0;
+        }
+
+        .chat-box {
+            padding: 15px;
+            flex: 1;
+            overflow-y: auto;
+            background-color: #f3f7fa;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message {
+            display: flex;
+            align-items: flex-start;
+            margin: 12px 0;
+            max-width: 80%;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .user .message-text {
+            background-color: #4caf50;
+            color: #fff;
+            align-self: flex-end;
+        }
+
+        .bot .message-text {
+            background-color: #f1f0f0;
+            color: #333;
+            align-self: flex-start;
+        }
+
+        .message-text {
+            margin: 5px 10px;
+            padding: 12px;
+            border-radius: 15px;
+            font-size: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .user i, .bot i {
+            font-size: 35px;
+            color: #4caf50;
+            margin: 5px;
+        }
+
+        .user i {
+            color: #4caf50;
+        }
+
+        .bot i {
+            color: #4a90e2;
+        }
+
+        .user {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .bot {
+            align-self: flex-start;
+            flex-direction: row;
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 15px;
+            border-top: 2px solid #92c9f0;
+            background-color: #f3f7fa;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            outline: none;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease-in-out;
+        }
+
+        .chat-input input:focus {
+            border-color: #4a90e2;
+            box-shadow: 0 0 10px rgba(74, 144, 226, 0.5);
+        }
+
+        .chat-input button {
+            background-color: #4a90e2;
+            color: #fff;
+            border: none;
+            padding: 12px 25px;
+            margin-left: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .chat-input button:hover {
+            background-color: #3b7ac1;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .chat-box::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .chat-box::-webkit-scrollbar-thumb {
+            background: #4a90e2;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">Chat with Mental Health Bot 🤖</div>
+        <div class="chat-box" id="chat-box">
+            <!-- Messages will appear here -->
+        </div>
+        <div class="chat-input">
+            <input type="text" id="user-message" placeholder="Type your message here..." onkeydown="handleKeyPress(event)">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        function sendMessage() {
+            const userMessage = document.getElementById("user-message").value.trim();
+            const chatBox = document.getElementById("chat-box");
+
+            if (!userMessage) {
+                alert("Please type a message.");
+                return;
+            }
+
+            // Add user's message with icon
+            const userDiv = document.createElement("div");
+            userDiv.className = "message user";
+            userDiv.innerHTML = `
+                <i class="fas fa-user-circle"></i>
+                <div class="message-text">${userMessage}</div>`;
+            chatBox.appendChild(userDiv);
+
+            // Clear input field
+            document.getElementById("user-message").value = "";
+
+            // Scroll to the bottom
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            // Show typing indicator
+            const botDiv = document.createElement("div");
+            botDiv.className = "message bot";
+            botDiv.innerHTML = `
+                <i class="fas fa-robot"></i>
+                <div class="message-text typing-indicator">Typing...</div>`;
+            chatBox.appendChild(botDiv);
+
+            // Fetch bot response
+            fetch("/get_response", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: `user_message=${encodeURIComponent(userMessage)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Update bot's response
+                botDiv.querySelector(".message-text").textContent = data.response || "Sorry, I didn't understand that.";
+                chatBox.scrollTop = chatBox.scrollHeight;
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                botDiv.querySelector(".message-text").textContent = "An error occurred. Please try again.";
+                chatBox.scrollTop = chatBox.scrollHeight;
+            });
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === "Enter") {
+                sendMessage();
+            }
+        }
+    </script>
+</body>
+</html>
